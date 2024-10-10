@@ -1,6 +1,6 @@
-Track Parser 1.4.0
+### Track Parser 1.4.0
 By Dan Vanderkam
-June 29, 2009
+_June 29, 2009_
 
 **What's it Good For?**
 Track Parser is a collection of AppleScripts which are designed to parse song names for information, greatly simplifying the process of tagging every song you import. In most cases, you've already got all the information that you'll be entering in some form or another, be it an info file that came with your download, or in the file names. Adding that information yourself is sheer drudgery. Track Parser lets you specify a format, and then hand over all the work to the computer.
@@ -106,7 +106,7 @@ The basic syntax of a regular expression in these scripts is: `/pattern/fields`
 The parser applies the pattern to each name/line, keeps track of all the captured subexpressions, and then uses the fields list to find out what each subexpression is. Maybe some examples will help. I'll assume you're familiar with regular expressions. There are countless websites and books devoted to them if you're not, and they're a lot of fun to use.
 
 Let's use the example from the beginning of the Read Me. The song is named:
-	
+
 	My Bloody Valentine - Loveless - 1 - Only Shallow
 
 To match it, you might enter the following:
@@ -130,7 +130,7 @@ Here are some more examples of regular expressions used to match songs:
 | `/(\\d\\d)(.\*)/tn` | 01Subterranean Homesick Blues |
 | `/(\\D+)((\\d+)-\\d+-\\d+)d(\\d)t(\\d+)/alydt` | pixies2004-04-19d1t01 (gets the year part!) |
 
-The last two examples are the most likely uses of regular expressions. The second to last example couldn't be matched with a _scanf_-style pattern, since there's nothing to seperate its two fields. The last pattern is fairly involved. The '2004' portion of the song name is actually captured twice: once for the year, and again as part of the album ('2004-04-19'). 
+The last two examples are the most likely uses of regular expressions. The second to last example couldn't be matched with a _scanf_-style pattern, since there's nothing to seperate its two fields. The last pattern is fairly involved. The '2004' portion of the song name is actually captured twice: once for the year, and again as part of the album ('2004-04-19').
 
 **Substitutions**
 If Track Parser supports Perl's m/../ syntax, then why not support its s/../../ syntax? If your pattern starts with s/, then it will be passed to Perl essentially verbatim, as a substitution operator. Whatever results from the substitution will become the new track name. You can do find and replace this way, for example:
@@ -200,15 +200,15 @@ This says that the album (l) is Radiohead, and that the artist (a) is OK Compute
 
 ```
 s{nalgrC}/^/Cnalgr\\n/
-``` 
+```
 
 Run that six times, and you should be exactly where you started.
 
 As an example of how to use the questions, let's write a script that sets a song's artist and album. This might be useful if you insert a CD when you're not connected to the internet, or the CDDB database doesn't know about it. The script should ask for the artist, and then the album. Here it is:
 
-``` 
+```
 s[Enter Artist:;Enter Album:]/.\*/al\\n$ans[0]\\n$ans[1]/
-``` 
+```
 
 The two questions are in square brackets, separated by a semicolon. The output consists of three lines. The first, al, says what the next two lines are. The next line is $ans[0], the answer to the first question, and the last is $ans[1], the answer to the second question.
 
@@ -301,7 +301,7 @@ If you use my parser in any other script, please let me know, and be sure to giv
 1.4.0 by [André Arko](https://github.com/indirect)
 	Re-hosted from Google Code archive to [github.com/indirect/trackparser](https://github.com/indirect/trackparser)
 	Updated scripts to run in Music.app 1.5 on macOS 15.1 Sequoia
-	_2024-10-07_ 
+	_2024-10-07_
 
 1.3.1
 	Fixed pesky Can't get every item of "" bug introduced in iTunes 8.
@@ -309,7 +309,7 @@ If you use my parser in any other script, please let me know, and be sure to giv
 	_6/29/2009_
 
 1.3
-** **Added the "no clobber" variants on several fields
+    Added the "no clobber" variants on several fields
 	Fixed all the uppercase fields, like "T" and "D". AppleScript really amazes me sometimes, the case in point here being the consider case ... end considering construct. "=" shouldn't return true when the two things aren't really equal!
 	Substitutions can now set more than just the name. This is an extremely powerful feature, as it lets you introduce new information into a match.
 	Substitutions can also take input from multiple sources. This allows you to do essentially anything that involves only specific track information (as opposed to "number of tracks selected," say).
@@ -322,10 +322,11 @@ If you use my parser in any other script, please let me know, and be sure to giv
 	Added a workaround for the iTunes 4.7 selection bug.
 	_1/13/2005_
 
-1.2.1	
+1.2.1
 	Fixed those mysterious, annoying "Error -4690" messages that prevented people from using earlier versions.
 	The "…(Clipboard)" script now skips blank lines, or anything that it interprets as blank lines. This means that it runs as expected on text that you've copied out of a document in TextEdit with windows line endings.
 	_7/27/2004_
+
 1.2
 	Added the "Favorites Patterns" screen, which appears by default when you run either script. This is a major shift in my approach to parsing, but I think it makes the scripts much easier to use.
 	Added the "Parser (Manager)" script to deal with favorites.
@@ -335,7 +336,8 @@ If you use my parser in any other script, please let me know, and be sure to giv
 	The "…(Clipboard)" script now gives you a sample line in the dialog.
 	The scripts (other than "…(Song Names)") now ask you where the song names script is if it's been renamed or moved.
 	_7/11/2004_
-1.1 	
+
+1.1
 	Added Regular Expression support via Perl
 	Added the "Test Run" functionality to the dialog box, which reduced the number of scripts to two.
 	The "… (Clipboard)" script now loads most of its code from the "…(Song Names)" script, which makes these nearly-identical scripts much easier to manage.
@@ -343,6 +345,7 @@ If you use my parser in any other script, please let me know, and be sure to giv
 	You're now given the option to abort or continue if a line/song fails to match.
 	The Clipboard and Song Names scripts now remember the last patterns they successfully used.
 	_6/14/2004_
-1.0 	
+
+1.0
 	Initial Release
 	_6/11/2004_
