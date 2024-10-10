@@ -13,7 +13,7 @@ property TPversion : 1.2 -- To make sure the prefs are in the right format
 property substQACode : "" -- this is a bit of a hack
 my loadPrefs()
 
-tell application "iTunes"
+tell application "Music"
 	set action to my getPattern("Pick a pattern that matches your songs, or enter a new one" & Â
 		" (see the Read Me for details).", Â
 		pref's lastSongPattern, pref's histSN)
@@ -27,7 +27,7 @@ tell application "iTunes"
 	
 	set sel to selection of front browser window
 	set num to length of sel
-	set matched to false
+	set foundMatch to false
 	repeat with i from 1 to num
 		set theTrack to item i of sel
 		set trackName to theTrack's name
@@ -36,13 +36,13 @@ tell application "iTunes"
 			if button returned of (display dialog "An error occured matching " & pattern & " to '" & trackName & "'. Would you like to continue matching?" buttons {"Stop Now", "Continue Matching"} default button 1) is "Stop Now" then
 				error number -128
 			end if
-		else if not matched and result then
-			set matched to true
+		else if not foundMatch and result then
+			set foundMatch to true
 			set matchedTrack to trackName
 		end if
 	end repeat
 	
-	if matched and not my inHistory(pref's histSN, pattern) then
+	if foundMatch and not my inHistory(pref's histSN, pattern) then
 		set patName to my getPatternName(matchedTrack)
 		if patName ­ false then my addPattern(pref's histSN, pattern, patName)
 	end if
@@ -432,46 +432,44 @@ end GetQACode
 -- but don't actually change the song
 -- the property is determined by the character var,
 -- and the new value is determined by the string/number value
-to displayChanges(var, value, song)
+to displayChanges(var, value, theSong)
 	considering case
-		tell application "iTunes"
-			tell song
-				if var = "a" then
-					display dialog "Setting artist of '" & song's name & "' to '" & value & "'"
-				else if var = "d" then
-					display dialog "Setting disc number of '" & song's name & "' to '" & value & "'"
-				else if var = "D" then
-					display dialog "Setting Disc Count of '" & song's name & "' to " & value
-				else if var = "l" then
-					display dialog "Setting album of '" & song's name & "' to '" & value & "'"
-				else if var = "n" then
-					display dialog "Setting song name of '" & song's name & "' to '" & value & "'"
-				else if var = "t" then
-					display dialog "Setting track number of '" & song's name & "' to " & value
-				else if var = "T" then
-					display dialog "Setting track count of '" & song's name & "' to " & value
-				else if var = "y" then
-					display dialog "Setting year of '" & song's name & "' to " & value
-				else if var = "c" then
-					display dialog "Setting comments of '" & song's name & "' to '" & value & "'"
-				else if var = "g" then
-					display dialog "Setting genre of '" & song's name & "' to '" & value & "'"
-				else if var = "r" then
-					display dialog "Setting grouping of '" & song's name & "' to '" & value & "'"
-				else if var = "p" then
-					display dialog "Setting played count of '" & song's name & "' to " & value
-				else if var = "b" then
-					display dialog "Setting BPM of '" & song's name & "' to " & value
-				else if var = "C" then
-					display dialog "Setting Composer of '" & song's name & "' to '" & value & "'"
-				else if var = "e" then
-					display dialog "Setting Last Played Date of '" & song's name & "' to " & value
-				else if var = "#" then
-					display dialog "Setting Rating of '" & song's name & "' to " & value
-				else if var = "0" then
-					-- Do Nothing
-				end if
-			end tell
+		tell application "Music"
+			if var = "a" then
+				display dialog "Setting artist of '" & theSong's name & "' to '" & value & "'"
+			else if var = "d" then
+				display dialog "Setting disc number of '" & theSong's name & "' to '" & value & "'"
+			else if var = "D" then
+				display dialog "Setting Disc Count of '" & theSong's name & "' to " & value
+			else if var = "l" then
+				display dialog "Setting album of '" & theSong's name & "' to '" & value & "'"
+			else if var = "n" then
+				display dialog "Setting song name of '" & theSong's name & "' to '" & value & "'"
+			else if var = "t" then
+				display dialog "Setting track number of '" & theSong's name & "' to " & value
+			else if var = "T" then
+				display dialog "Setting track count of '" & theSong's name & "' to " & value
+			else if var = "y" then
+				display dialog "Setting year of '" & theSong's name & "' to " & value
+			else if var = "c" then
+				display dialog "Setting comments of '" & theSong's name & "' to '" & value & "'"
+			else if var = "g" then
+				display dialog "Setting genre of '" & theSong's name & "' to '" & value & "'"
+			else if var = "r" then
+				display dialog "Setting grouping of '" & theSong's name & "' to '" & value & "'"
+			else if var = "p" then
+				display dialog "Setting played count of '" & theSong's name & "' to " & value
+			else if var = "b" then
+				display dialog "Setting BPM of '" & theSong's name & "' to " & value
+			else if var = "C" then
+				display dialog "Setting Composer of '" & theSong's name & "' to '" & value & "'"
+			else if var = "e" then
+				display dialog "Setting Last Played Date of '" & theSong's name & "' to " & value
+			else if var = "#" then
+				display dialog "Setting Rating of '" & theSong's name & "' to " & value
+			else if var = "0" then
+				-- Do Nothing
+			end if
 		end tell
 	end considering
 end displayChanges
@@ -483,10 +481,10 @@ to getDate(dateStr)
 end getDate
 
 -- Actually modify the song
-to makeChanges(var, value, song)
+to makeChanges(var, value, theSong)
 	considering case
-		tell application "iTunes"
-			tell song
+		tell application "Music"
+			tell theSong
 				if var = "a" then
 					set artist to value
 				else if var = "d" then
@@ -527,10 +525,10 @@ end makeChanges
 
 -- Return the value of a field as a string
 -- Used in complex multi-source substitutions
-to getField(var, song)
+to getField(var, theSong)
 	considering case
-		tell application "iTunes"
-			tell song
+		tell application "Music"
+			tell theSong as track
 				if var = "a" then
 					return artist
 				else if var = "d" then
@@ -574,7 +572,7 @@ end getField
 
 -- Preferences Stuff
 to loadPrefs()
-	set pToPrefs to ((path to preferences folder from user domain as string) & "iTunes Parser prefs")
+	set pToPrefs to ((path to preferences folder from user domain as string) & "Music Parser prefs")
 	try
 		set pref to load script alias pToPrefs --file "blah.scpt"
 		if pref's TPversion < my TPversion then error number 1
@@ -633,7 +631,7 @@ to deleteFile(f)
 end deleteFile
 
 to savePrefs()
-	set pToPrefs to ((path to preferences folder from user domain as string) & "iTunes Parser prefs")
+	set pToPrefs to ((path to preferences folder from user domain as string) & "Music Parser prefs")
 	try
 		my deleteFile(pToPrefs as alias)
 	end try

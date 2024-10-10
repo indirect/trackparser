@@ -2,7 +2,7 @@ property pattern : "%t. %n"
 
 property pathToBase : 0
 if pathToBase is 0 then
-	set pathToBase to ((path to "dlib" from user domain as string) & "iTunes:Scripts:Parser (Song Names).scpt")
+	set pathToBase to ((path to "dlib" from user domain as string) & "Music:Scripts:Parser (Song Names).scpt")
 end if
 
 set success to false
@@ -16,7 +16,7 @@ repeat while not success
 	end try
 end repeat
 
-tell application "iTunes"
+tell application "Music"
 	set saveD to AppleScript's text item delimiters
 	set txt to (the clipboard as text)
 	set mlines to parser's split(return, txt)
@@ -28,7 +28,7 @@ tell application "iTunes"
 	set sel to selection of front browser window
 	set numT to length of sel
 	set numL to length of mlines
-	set matched to false
+	set matchFound to false
 	set iLine to 0
 	repeat with iTrack from 1 to numT
 		set thisTrack to item iTrack of sel
@@ -39,19 +39,11 @@ tell application "iTunes"
 		end repeat
 		set thisLine to item iLine of mlines
 		set res to parser's applyPattern(thisLine, cPat, thisTrack, action's callback)
-		if res is false and iTrack < numT then
-			if button returned of (display dialog "An error occured matching " & pattern & " to '" & thisLine & "'. Would you like to continue matching?" buttons {"Stop Now", "Continue Matching"} default button 1) is "Stop Now" then
-				error number -128
-			end if
-		else if not matched then
-			set matched to true
-			set matchedTrack to thisLine
-		end if
 	end repeat
 	
-	if matched and not parser's inHistory(parser's pref's histC, pattern) then
-		set patName to parser's getPatternName(matchedTrack)
-		if patName ­ false then parser's addPattern(parser's pref's histC, pattern, patName)
-	end if
+	--	if matchFound and not parser's inHistory(parser's pref's histC, pattern) then
+	--		set patName to parser's getPatternName(matchedTrack)
+	--		if patName ­ false then parser's addPattern(parser's pref's histC, pattern, patName)
+	--	end if
 end tell
 
